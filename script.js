@@ -33,13 +33,17 @@ canvas.addEventListener('mousemove', (e) => {
     if(isPressed) {// only draws if mouse is held down
         const x2 = e.offsetX;
         const y2 = e.offsetY;
-        if (e.shiftKey) { // if the shift key is pressed and the mouse is pressed it will run the erase functions
+        if (e.shiftKey && square.classList.contains('stamp')) {
+            eraseSquare(x2,y2);
+        } else if (e.shiftKey) { // if the shift key is pressed and the mouse is pressed it will run the erase functions
             eraseCircle(x2, y2);
             eraseLine(x, y, x2, y2);
             x=x2;
             y=y2;
+        } else if (square.classList.contains("stamp")) {
+            drawSquare(x2,y2);
         } else { // if the mouse is pressed and the shift key is not, it will run the draw functions
-        drawCircle(x2, y2);
+        drawCircle(x2,y2);
         drawLine(x, y, x2, y2);
         x=x2;
         y=y2;
@@ -56,6 +60,17 @@ function drawCircle(x, y) { // uses location of mouse and draws a circle the col
     ctx.fillStyle = color;
     ctx.fill();
 }
+
+function drawSquare(x, y) {
+    ctx.beginPath();
+    transparency = document.getElementById('transparent').value;
+    ctx.globalAlpha = transparency;
+    ctx.rect(x - size, y - size, size * 2, size * 2);
+    color = document.getElementById('color').value;
+    ctx.fillStyle = color;
+    ctx.fill();
+}
+
 
 function drawLine(x1, y1, x2, y2) { // follows the movement of the mouse to draw lines
     ctx.beginPath();
@@ -147,6 +162,16 @@ function eraseCircle(x, y) { // draws a background color circle at the mouse's l
     ctx.fill();
 }
 
+function eraseSquare(x, y) { // draws a background color circle at the mouse's location to erase anything drawn there
+    ctx.beginPath();
+    ctx.rect(x - size, y - size, size * 2, size * 2);
+    transparency = document.getElementById('transparent').value;
+    ctx.globalAlpha = transparency;
+    color = '#f5f5f5';
+    ctx.fillStyle = color;
+    ctx.fill();
+}
+
 function eraseLine(x1, y1, x2, y2) { // draws a background color line following the mouse to erase anything drawn there
     ctx.beginPath();
     ctx.moveTo(x1, y1);
@@ -159,3 +184,9 @@ function eraseLine(x1, y1, x2, y2) { // draws a background color line following 
     ctx.stroke();
 }
 
+const square =  document.getElementById('square');
+square.onclick = squareStamp;
+
+function squareStamp() {
+    square.classList.toggle("stamp");
+}
