@@ -35,6 +35,8 @@ canvas.addEventListener('mousemove', (e) => {
         const y2 = e.offsetY;
         if (e.shiftKey && square.classList.contains('stamp')) {
             eraseSquare(x2,y2);
+        } else if (e.shiftKey && triangle.classList.contains("stamp")) {
+            eraseTriangle(x2,y2);
         } else if (e.shiftKey) { // if the shift key is pressed and the mouse is pressed it will run the erase functions
             eraseCircle(x2, y2);
             eraseLine(x, y, x2, y2);
@@ -42,11 +44,16 @@ canvas.addEventListener('mousemove', (e) => {
             y=y2;
         } else if (square.classList.contains("stamp")) {
             drawSquare(x2,y2);
+        } else if (triangle.classList.contains("stamp")) {
+            drawTriangle(x,y);
+            x = x2;
+            y = y2;
         } else { // if the mouse is pressed and the shift key is not, it will run the draw functions
         drawCircle(x2,y2);
         drawLine(x, y, x2, y2);
         x=x2;
         y=y2;
+        
         }
     }
 })
@@ -71,6 +78,17 @@ function drawSquare(x, y) {
     ctx.fill();
 }
 
+function drawTriangle(x1, y1) { // follows the movement of the mouse to draw lines
+    ctx.beginPath();
+    ctx.moveTo(x1, y1);
+    ctx.lineTo(x1 + size, y1 + size);
+    ctx.lineTo(x1 - size, y1 + size);
+    transparency = document.getElementById('transparent').value;
+    ctx.globalAlpha = transparency;
+    color = document.getElementById('color').value;
+    ctx.fillStyle = color;
+    ctx.fill();
+}
 
 function drawLine(x1, y1, x2, y2) { // follows the movement of the mouse to draw lines
     ctx.beginPath();
@@ -139,14 +157,12 @@ function incrementSize10() {
 
 const clearButton = document.getElementById("clear");
 
-clearButton.onclick = clear;// draws a background color circle bigger than the canvas to clear the canvas
+clearButton.onclick = clear;// draws a background color square the size of the canvas to clear the canvas
 
 function clear() {
     ctx.beginPath();
-    transparency = 1;
-    ctx.globalAlpha = transparency;
-    document.getElementById('transparent').value = transparency;
-    ctx.arc(400, 400, 570, 0, Math.PI * 2);
+    ctx.globalAlpha = 1;
+    ctx.rect(0, 0, 800, 800);
     color = '#f5f5f5';
     ctx.fillStyle = color;
     ctx.fill();
@@ -162,9 +178,21 @@ function eraseCircle(x, y) { // draws a background color circle at the mouse's l
     ctx.fill();
 }
 
-function eraseSquare(x, y) { // draws a background color circle at the mouse's location to erase anything drawn there
+function eraseSquare(x, y) { // draws a background color square at the mouse's location to erase anything drawn there
     ctx.beginPath();
     ctx.rect(x - size, y - size, size * 2, size * 2);
+    transparency = document.getElementById('transparent').value;
+    ctx.globalAlpha = transparency;
+    color = '#f5f5f5';
+    ctx.fillStyle = color;
+    ctx.fill();
+}
+
+function eraseTriangle(x1, y1) { // follows the movement of the mouse to erase in the shape of a triangle
+    ctx.beginPath();
+    ctx.moveTo(x1, y1);
+    ctx.lineTo(x1 + size, y1 + size);
+    ctx.lineTo(x1 - size, y1 + size);
     transparency = document.getElementById('transparent').value;
     ctx.globalAlpha = transparency;
     color = '#f5f5f5';
@@ -189,4 +217,26 @@ square.onclick = squareStamp;
 
 function squareStamp() {
     square.classList.toggle("stamp");
+    if(square.classList.contains("stamp")) {
+        square.style.backgroundColor = "black";
+        square.style.color = "white";
+    } else {
+        square.style.backgroundColor = "white";
+        square.style.color = "black";
+    }
+}
+
+const triangle = document.getElementById("triangle");
+
+triangle.onclick = triangleStamp;
+
+function triangleStamp() {
+    triangle.classList.toggle("stamp");
+    if(triangle.classList.contains("stamp")) {
+        triangle.style.backgroundColor = "black";
+        triangle.style.color = "white";
+    } else {
+        triangle.style.backgroundColor = "white";
+        triangle.style.color = "black";
+    }
 }
